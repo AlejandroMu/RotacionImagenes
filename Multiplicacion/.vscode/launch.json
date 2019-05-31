@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - MultiplicateMatrix",
+            "request": "launch",
+            "mainClass": "edu.icesi.MultiplicacionMatrices.MultiplicateMatrix",
+            "projectName": "Multiplicacion"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Main",
+            "request": "launch",
+            "mainClass": "edu.icesi.MultiplicacionMatrices.Main",
+            "projectName": "Multiplicacion"
+        }
+    ]
+}

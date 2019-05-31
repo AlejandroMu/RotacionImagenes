@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" 
+    xmlns:frascati="http://frascati.ow2.org/xmlns/sca/1.1" name="broker">
+
+    <service name="red" promote="broker/redireccion">
+        <frascati:binding.rmi host="localhost/" serviceName="redireccion" port="1234"/>
+    </service>
+    <component name="broker">
+        <service name="redireccion">
+            <interface.java interface="edu.icesi.interfaces.IBroker"/>
+        </service>
+        <implementation.java class="edu.icesi.implementacion.Broker"/>
+    </component>
+</composite>

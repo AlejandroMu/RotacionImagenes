@@ -1,0 +1,45 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - MultiplicateMatrix",
+            "request": "launch",
+            "mainClass": "edu.icesi.MultiplicacionMatrices.MultiplicateMatrix",
+            "projectName": "Multiplicacion"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - ClientRotacion",
+            "request": "launch",
+            "mainClass": "edu.icesi.implementacion.ClientRotacion",
+            "projectName": "Cliente"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - ClientMultiplicar",
+            "request": "launch",
+            "mainClass": "edu.icesi.implementacion.ClientMultiplicar",
+            "projectName": "Cliente"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Main",
+            "request": "launch",
+            "mainClass": "edu.icesi.MultiplicacionMatrices.Main",
+            "projectName": "Multiplicacion"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - App",
+            "request": "launch",
+            "mainClass": "edu.icesi.App"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Rotacion",
+            "request": "launch",
+            "mainClass": "edu.icesi.implementacion.Rotacion",
+            "projectName": "Rotacion"
+        }
+    ]
+}

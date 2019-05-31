@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" 
+	xmlns:frascati="http://frascati.ow2.org/xmlns/sca/1.1" name="MultiplicacionMatrices">
+
+	<service name="multiplicar" promote="multiplicacionMatrices/multiplicar">
+		<frascati:binding.rmi host="localhost/" serviceName="multiplicar" port="1235"/>
+	</service>
+
+	<component name="multiplicacionMatrices">
+		<service name="multiplicar">
+			<interface.java interface="edu.icesi.interfaces.IMatrixOperations"/>
+		</service>
+		<implementation.java class="edu.icesi.MultiplicacionMatrices.MultiplicateMatrix"/>
+		<property name="service">rmi://localhost:1235/multiplicar</property>
+		<reference name="broker">
+			<frascati:binding.rmi host="localhost/" serviceName="redireccion" port="1234"/>
+		</reference>
+	</component>
+
+	<component name="multiplicacionVectores">
+		<service name="multiplicarVectores">
+			<interface.java interface="edu.icesi.interfaces.IMultiplicationVectors"/>
+		</service>
+		<implementation.java class="edu.icesi.MultiplicacionVectores.MultiplicationVectors"/>
+	</component>
+	<wire source="multiplicacionMatrices/mVectors" target="multiplicacionVectores/multiplicarVectores"/>
+
+</composite>

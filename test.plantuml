@@ -1,0 +1,72 @@
+@startuml Operaciones de matrices
+node c:Cliente as c{
+    component cliente as cl
+    component DataManager as Ma
+    () " setPixels(Pair,j,p) " as sp
+    sp - Ma
+    () " readImage(path) " as ri
+    () "getSize()" as size
+    Ma -- size
+    ri -- Ma
+    cl --( ri
+}
+node :Balanceador as m{
+    component Balanceador as mM
+    () "rotar(path)" as iMM
+    iMM -- mM
+    cl --( iMM
+}
+node v1:OperacionMatrices as v1{
+    component OperacionMatrices as mV
+    component MultiplicadorVectores as mVec
+    () "rotar(Point,Point,double):Point[]" as iMV
+    () "multiplicarVectores(v1,v2):int[]" as mVI
+    mVI -- mVec
+    iMV -- mV
+    mM---( iMV
+    mV --( mVI
+}
+node v2:OperacionMatrices as v2{
+    component OperacionMatrices as mV2
+    component MultiplicadorVectores as mVec2
+    () "rotar(Point,Point,double):Point[]" as iMV2
+    () "multiplicarVectores(v1,v2):int[]" as mVI2
+    mVI2 -- mVec2
+    iMV2 -- mV2
+    mM --( iMV2
+    mV2 --( mVI2
+}
+node :Broker as b{
+    component "Broker" as br
+    () "attach(String)" as rg
+    br -- rg
+    () "getServer():String" as gs
+    br -- gs
+    () "addProcess(String)" as ap
+    br -- ap
+    () "removeProcess(String)" as rp
+    br -- rp
+    () "disconect(String)" as d
+    br -- d
+}
+mM --( gs
+mV2 ---( d
+mV2 ---( rg
+mV2 ---( ap
+mV2 ---( rp
+mV ---( d
+mV ---( rg
+mV ---( ap
+mV ---( rp
+
+c -- m :<<rmi>
+m--v1:<<rmi>>
+m--v2:<<rmi>>
+m -- b:<<rmi>>
+v1 - b:<<rmi>>
+v2 - b:<<rmi>>
+
+
+
+
+@enduml
