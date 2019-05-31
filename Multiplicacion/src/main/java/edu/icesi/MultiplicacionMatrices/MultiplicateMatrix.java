@@ -3,13 +3,12 @@ package edu.icesi.MultiplicacionMatrices;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
+import java.lang.Runnable;
+import org.osoa.sca.annotations.*;
 
 import edu.icesi.interfaces.*;
-
-public class MultiplicateMatrix implements IMatrixOperations {
+@Service(Runnable.class)
+public class MultiplicateMatrix implements IMatrixOperations,Runnable {
 
 	@Property(name = "service")
 	private String servi;
@@ -19,14 +18,18 @@ public class MultiplicateMatrix implements IMatrixOperations {
 	@Reference(name = "broker", required = true)
 	public void setBroker(IBroker pat) {
 		broker = pat;
-		System.out.println("Connecting ...");
-		broker.attach(servi);
-		System.out.println("Connected");
+		
 	}
 
 	@Reference(name = "mVectors", required = true)
 	public void setMVectors(IMultiplicationVectors v) {
 		mVectors = v;
+	}
+
+	public void run(){
+		System.out.println("Connecting ...");
+		broker.attach(servi);
+		System.out.println("Connected");
 	}
 
 	// MxN v NxK
@@ -53,13 +56,13 @@ public class MultiplicateMatrix implements IMatrixOperations {
 	}
 
 	@Override
-	public List<long[][]> rotar(long[][] point, double angle) {
-		long piX = point[0][0];
-		long piY = point[0][1];
-		long pjX = point[1][0];
-		long pjY = point[1][1];
-		long pcX = point[2][0];
-		long pcY = point[2][1];
+	public List<int[][]> rotar(int[][] point, double angle) {
+		int piX = point[0][0];
+		int piY = point[0][1];
+		int pjX = point[1][0];
+		int pjY = point[1][1];
+		int pcX = point[2][0];
+		int pcY = point[2][1];
 		double grR = Math.toRadians(angle);
 		double sin = Math.sin(grR);
 		double cos = Math.cos(grR);
@@ -68,18 +71,18 @@ public class MultiplicateMatrix implements IMatrixOperations {
 		double dy = pcY + pcX * cos - pcY * sin;
 		double[][] mat1 = { { 1, 0 }, { sin, 1 } };
 		double[][] mat2 = { { 1, -tan }, { 0, 1 } };
-		List<long[][]> points = new ArrayList<long[][]>();
-		for (long ini = piY; ini < pjY; ini++) {
-			for (long j = piX; j < pjX; j++) {
+		List<int[][]> points = new ArrayList<int[][]>();
+		for (int ini = piY; ini < pjY; ini++) {
+			for (int j = piX; j < pjX; j++) {
 				double[][] vP = new double[][] { { ini }, { j } };
 				double[][] rs = matrixMultiplication(mat2, vP);
 				double[][] rs1 = matrixMultiplication(mat1, rs);
 				double[][] rs2 = matrixMultiplication(mat2, rs1);
-				long iN = (long) (Math.round(rs2[0][0]) + dx);
-				long jn = (long) (Math.round(rs2[1][0]) + dy);
-				long[] newPoint = { iN, jn };
-				long[] oldPoint = { ini, j };
-				long[][] tmp = { newPoint, oldPoint };
+				int iN = (int) (Math.round(rs2[0][0]) + dx);
+				int jn = (int) (Math.round(rs2[1][0]) + dy);
+				int[] newPoint = { iN, jn };
+				int[] oldPoint = { ini, j };
+				int[][] tmp = { newPoint, oldPoint };
 				points.add(tmp);
 			}
 		}

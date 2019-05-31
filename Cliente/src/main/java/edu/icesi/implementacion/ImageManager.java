@@ -47,8 +47,8 @@ public class ImageManager {
             e.printStackTrace();
         }
     }
-    public synchronized void merge(List<long[][]> t,Point i,Point j){
-        for (long[][] var : t) {
+    public synchronized void merge(List<int[][]> t,Point i,Point j){
+        for (int[][] var : t) {
             int rgb=image.getRGB((int)var[1][1], (int)var[1][0]);
             image2.setRGB((int)var[0][1], (int)var[0][0], rgb);
         }

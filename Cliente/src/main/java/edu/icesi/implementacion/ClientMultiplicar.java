@@ -5,6 +5,8 @@ import java.rmi.Naming;
 import java.util.*;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Service;
+import edu.icesi.interfaces.*;
+
 
 
 /**

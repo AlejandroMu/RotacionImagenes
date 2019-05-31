@@ -3,17 +3,22 @@
 	xmlns:frascati="http://frascati.ow2.org/xmlns/sca/1.1" name="MultiplicacionMatrices">
 
 	<service name="multiplicar" promote="multiplicacionMatrices/multiplicar">
-		<frascati:binding.rmi host="localhost/" serviceName="multiplicar" port="1235"/>
+		<frascati:binding.rmi host="localhost" serviceName="multiplicar" port="5002"/>
 	</service>
+	<service name="attach" promote="multiplicacionMatrices/attach"/>
+
 
 	<component name="multiplicacionMatrices">
 		<service name="multiplicar">
 			<interface.java interface="edu.icesi.interfaces.IMatrixOperations"/>
 		</service>
+		<service name="attach">
+			<interface.java interface="java.lang.Runnable"/>
+		</service>
 		<implementation.java class="edu.icesi.MultiplicacionMatrices.MultiplicateMatrix"/>
-		<property name="service">rmi://localhost:1235/multiplicar</property>
+		<property name="service">rmi://192.168.161.22:5002/multiplicar</property>
 		<reference name="broker">
-			<frascati:binding.rmi host="localhost/" serviceName="redireccion" port="1234"/>
+			<frascati:binding.rmi host="192.168.161.22" serviceName="redireccion" port="5001"/>
 		</reference>
 	</component>
 

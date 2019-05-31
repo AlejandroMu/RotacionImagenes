@@ -6,32 +6,34 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 import edu.icesi.interfaces.IBroker;
+import java.lang.*;
 
 /**
  * Broker
  */
+
 public class Broker implements IBroker {
 
-    private PriorityQueue<Pair> procesors;
-    private HashMap<String, Pair> mProcesors;
+    private static PriorityQueue<Pair> procesors=new PriorityQueue<Pair>(20,new Comparator<Pair>() {
 
-    public Broker() throws RemoteException {
+        public int compare(Pair o1, Pair o2) {
+            return o1.compareTo(o2);
+        }
+    });
+    private static HashMap<String, Pair> mProcesors=new HashMap<String, Pair>();
+
+    public Broker() {
         System.out.println("Broker");
-        Comparator<Pair> com = new Comparator<Pair>() {
-
-            public int compare(Pair o1, Pair o2) {
-                return o1.compareTo(o2);
-            }
-        };
-        procesors = new PriorityQueue<Pair>(20,com);
-        mProcesors = new HashMap<String, Pair>();
+        
     }
-
+    
     @Override
     public synchronized void attach(String url) {
         Pair tmp = new Pair(url, 0);
         mProcesors.put(url, tmp);
         procesors.add(tmp);
+        System.out.println("size q-> "+procesors.size());
+        System.out.println("size h -> "+mProcesors.keySet().size());
         Iterator<String> tm = mProcesors.keySet().iterator();
         for (; tm.hasNext();) {
             System.out.println("Regist: " + tm.next());
@@ -49,8 +51,12 @@ public class Broker implements IBroker {
 
     @Override
     public synchronized String getOperation() {
-        Pair ob = procesors.poll();
+        System.out.println("Entro");
+        Pair ob=procesors.poll();
+        System.out.println("Point --> "+ ob);
+
         if (ob != null) {
+            System.out.println("not null");
             change(ob.x, ob.y + 1);
         }
         String ret = ob.x;

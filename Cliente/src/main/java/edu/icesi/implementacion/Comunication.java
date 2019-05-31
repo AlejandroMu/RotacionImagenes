@@ -3,6 +3,7 @@ package edu.icesi.implementacion;
 import java.awt.Point;
 import java.rmi.Naming;
 import java.util.List;
+import edu.icesi.interfaces.*;
 
 
 /**
@@ -10,12 +11,12 @@ import java.util.List;
  */
 public class Comunication extends Thread {
 
-    private long[][] data;
+    private int[][] data;
     private double angle;
     private String urlB;
     private ImageManager manager;
 
-    public Comunication(long[][] data, double a, String b,ImageManager ma) {
+    public Comunication(int[][] data, double a, String b,ImageManager ma) {
         this.data = data;
         angle = a;
         urlB = b;
@@ -30,7 +31,7 @@ public class Comunication extends Thread {
             // IBroker broker = (IBroker) Naming.lookup(url);
             // String urlS = broker.getOperation();
             IMatrixOperations oper = (IMatrixOperations) Naming.lookup("rmi://localhost:1235/multiplicar");
-            List<long[][]> ret=oper.rotar(data, angle);
+            List<int[][]> ret=oper.rotar(data, angle);
             manager.merge(ret,new Point(),new Point());
         } catch (Exception e) {
             e.printStackTrace();
