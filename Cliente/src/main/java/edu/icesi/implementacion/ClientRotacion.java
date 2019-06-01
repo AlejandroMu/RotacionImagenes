@@ -32,8 +32,9 @@ public class ClientRotacion implements Runnable {
             System.out.println(grados);
             System.out.println(broker);
             String route=broker.getOperation();
-            System.out.println("recive --> "+route);   
+            System.out.println("recive --> "+route);  
             IMatrixOperations tmp=(IMatrixOperations)Naming.lookup(route);
+
             double[][] m1={{2,1},{2,1}};
             double[][] m2={{1},{3}};
             double[][] res=tmp.matrixMultiplication(m1,m2);
@@ -47,4 +48,6 @@ public class ClientRotacion implements Runnable {
             System.out.println(e.getMessage());
         }
     }
+   
+    
 }
