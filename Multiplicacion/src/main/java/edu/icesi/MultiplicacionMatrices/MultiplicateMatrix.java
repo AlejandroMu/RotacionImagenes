@@ -70,7 +70,14 @@ public class MultiplicateMatrix extends UnicastRemoteObject implements IMatrixOp
 	@Override
 	public boolean rotar(int[] inic,int[] fin,int[] deltas, double angle,String name)throws RemoteException {
 		try {
-			BufferedImage nueva=ImageIO.read(new File(pathBase+"/"+destino));
+			System.out.println("inic -> "+inic[0]+" "+inic[1]);
+			System.out.println("fin -> "+fin[0]+" "+fin[1]);
+			System.out.println("deltas -> "+deltas[0]+" "+deltas[1]);
+			System.out.println("rotar");
+			System.out.println("Bufer n --> "+pathBase+"/"+destino);
+			File nu=new File(pathBase+"/"+destino);
+			BufferedImage nueva=new BufferedImage(1500,1500,BufferedImage.TYPE_INT_RGB);
+			System.out.println("Bufer old-> "+pathBase+"/"+name);
 			BufferedImage old=ImageIO.read(new File(pathBase+"/"+name));
 			double gr=Math.toRadians(angle);
 			double cos = Math.cos(gr);
@@ -80,13 +87,20 @@ public class MultiplicateMatrix extends UnicastRemoteObject implements IMatrixOp
 				for (int j = inic[0]; j < fin[0]; j++) {
 				   Point rotado=processIndex(i,j,matRotacion);
 				   int rgb=old.getRGB(j,i);
-				   nueva.setRGB(rotado.y,rotado.x,rgb);
+				   if(rotado.x<0){System.out.println("x < "+ rotado.x);}
+				   if(rotado.x+deltas[1]>=1500){System.out.println("x > "+ rotado.x);}
+				   if(rotado.y<0){System.out.println("y < "+ rotado.y);}
+				   if(rotado.y+deltas[0]>=1500){System.out.println("y > "+ rotado.y);}
+				   
+				   nueva.setRGB(rotado.y+deltas[0],rotado.x+deltas[1],rgb);
 				}
 			}
-	
+			System.out.println("return");
+			ImageIO.write(nueva,"jpg",nu);
 		return true;
 			
 		} catch (Exception e) {
+			System.out.println("exc "+e.getMessage());
 			return false;
 		}
 	}
