@@ -22,6 +22,7 @@ public class ClientRotacion implements Runnable {
     private String pathImage;
     @Property(name = "grados")
     private double grados;
+
     
     @Reference(name = "broker",required=true)
     public void setBroker(IBroker broker){
@@ -33,15 +34,12 @@ public class ClientRotacion implements Runnable {
             String route=broker.getOperation();
             File imagen=new File(pathImage);
             IMatrixOperations tmp=(IMatrixOperations)Naming.lookup(route);
+            int[] inic={0,0};
+            int[] fin={2500,2500};
+            int[] c={2500,2500};
+            tmp.rotar(inic,fin,c,grados,pathImage);
 
-            double[][] m1={{2,1},{2,1}};
-            double[][] m2={{1},{3}};
-            double[][] res=tmp.matrixMultiplication(m1,m2);
-            for (double[] var : res) {
-                for (double var1 : var) {
-                    System.out.println(var1);
-                }
-            }
+         
             
         } catch (Exception e) {
             System.out.println(e.getMessage());
