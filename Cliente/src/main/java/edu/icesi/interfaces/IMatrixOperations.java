@@ -6,7 +6,7 @@ import java.rmi.*;
 
 
  @Service
-public interface IMatrixOperations {
-	public double[][] matrixMultiplication(double[][] m1,double[][] m2);
-	public List<int[][]> rotar(int[][] points, double angle);
+public interface IMatrixOperations extends Remote{
+	public double[][] matrixMultiplication(double[][] m1,double[][] m2)throws RemoteException;
+	public List<int[][]> rotar(int[] inic,int[] fin,int[] c, double angle)throws RemoteException;
 }

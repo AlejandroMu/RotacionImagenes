@@ -30,9 +30,9 @@ public class Comunication extends Thread {
             System. out. println(url);
             // IBroker broker = (IBroker) Naming.lookup(url);
             // String urlS = broker.getOperation();
-            IMatrixOperations oper = (IMatrixOperations) Naming.lookup("rmi://localhost:1235/multiplicar");
-            List<int[][]> ret=oper.rotar(data, angle);
-            manager.merge(ret,new Point(),new Point());
+            //IMatrixOperations oper = (IMatrixOperations) Naming.lookup("rmi://localhost:1235/multiplicar");
+            //List<int[][]> ret=oper.rotar(data, angle);
+            //manager.merge(ret,new Point(),new Point());
         } catch (Exception e) {
             e.printStackTrace();
         }
