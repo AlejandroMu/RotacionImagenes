@@ -69,23 +69,28 @@ public class MultiplicateMatrix extends UnicastRemoteObject implements IMatrixOp
 	}
 	@Override
 	public boolean rotar(int[] inic,int[] fin,int[] deltas, double angle,String name)throws RemoteException {
-		BufferedImage nueva=ImageIO.read(new File(pathBase+"/"+destino));
-		BufferedImage old=ImageIO.read(new File(pathBase+"/"+name));
-		double gr=Math.toRadians(angle);
-        double cos = Math.cos(gr);
-        double sen = Math.sin(gr);
-		double[][] matRotacion = {{cos,sen},{-sen,cos}};
-        for (int i = inic[1]; i < fin[1]; i++) {
-            for (int j = inic[0]; j < fin[0]; j++) {
-			   Point rotado=processIndex(i,j,matRotacion);
-			   int rgb=old.getRGB(j,i);
-			   nueva.setRGB(rotado.y,rotado.x,rgb);
-            }
-        }
-
-	return transfomMatrix(points, corners,name,inic,fin);
+		try {
+			BufferedImage nueva=ImageIO.read(new File(pathBase+"/"+destino));
+			BufferedImage old=ImageIO.read(new File(pathBase+"/"+name));
+			double gr=Math.toRadians(angle);
+			double cos = Math.cos(gr);
+			double sen = Math.sin(gr);
+			double[][] matRotacion = {{cos,sen},{-sen,cos}};
+			for (int i = inic[1]; i < fin[1]; i++) {
+				for (int j = inic[0]; j < fin[0]; j++) {
+				   Point rotado=processIndex(i,j,matRotacion);
+				   int rgb=old.getRGB(j,i);
+				   nueva.setRGB(rotado.y,rotado.x,rgb);
+				}
+			}
+	
+		return true;
+			
+		} catch (Exception e) {
+			return false;
+		}
 	}
-	public Point processIndex(int i,int j,double[][] matRotacion){
+	public Point processIndex(int i,int j,double[][] matRotacion)throws RemoteException{
 		double[][] vP = new double[][] { { i }, { j } };
 		double[][] rs = matrixMultiplication(matRotacion, vP);
 		int iN= (int)Math.round(rs[0][0]);
@@ -93,29 +98,5 @@ public class MultiplicateMatrix extends UnicastRemoteObject implements IMatrixOp
 		return new Point(iN, jn);		
 	}
 	
-	private boolean transfomMatrix(HashMap<Point, Point> points, Point[] cornes,String name,int[] inic,int[] fin) {
-		try{
-        int m = cornes[1].y - cornes[0].y;
-        int n = cornes[1].x - cornes[0].x;
-        int dx = -1 * cornes[0].x;
-		int dy = -1 * cornes[0].y;
-		BufferedImage nueva=new BufferedImage(n+1,m+1,BufferedImage.TYPE_INT_RGB);
-		BufferedImage old=ImageIO.read(new File(pathBase+"/"+name));
-		System.out.println("h "+old.getHeight());
-		System.out.println("w "+old.getWidth());
-        Iterator<Point> keys = points.keySet().iterator();
-        while (keys.hasNext()) {
-			Point tmp = keys.next();
-			Point tmp1=points.get(tmp);
-			int rgb=old.getRGB(tmp1.y,tmp1.x);
-            nueva.setRGB(tmp.y+dy,tmp.x+dx,rgb);
-		}
-		ImageIO.write(nueva,"jpg",new File(pathBase+"/rotadaN"));
-		return true;
-	}catch(Exception e){
-		System.out.println(e.getMessage());
-		return false;
 
-	}
-	}
 }

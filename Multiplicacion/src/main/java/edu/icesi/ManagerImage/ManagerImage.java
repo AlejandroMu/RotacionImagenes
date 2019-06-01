@@ -1,4 +1,5 @@
 package edu.icesi.ManagerImage;
+
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -77,11 +78,16 @@ public class ManagerImage implements IImageManager{
 		
 	}
 
-	public int getSize(String ruta){
-		ImageInputStream input = ImageIO.createImageInputStream(new File(ruta));
-		ImageReader reader = ImageIO.getImageReaders(input).next();
-		int[] size={reader.getHeight(0),reader.getWidth(0)};
-		return size;
+	public int[] getSize(String ruta){
+		try {
+			
+			ImageInputStream input = ImageIO.createImageInputStream(new File(ruta));
+			ImageReader reader = ImageIO.getImageReaders(input).next();
+			int[] size={reader.getHeight(0),reader.getWidth(0)};
+			return size;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	
