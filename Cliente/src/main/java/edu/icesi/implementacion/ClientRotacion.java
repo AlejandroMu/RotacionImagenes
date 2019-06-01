@@ -10,6 +10,7 @@ import java.io.*;
 import java.awt.image.*;
 import javax.imageio.*;
 import java.util.*;
+import java.awt.*;
 
 /**
  * ClientRotacion
@@ -35,8 +36,10 @@ public class ClientRotacion implements Runnable {
             File imagen=new File(pathImage);
             IMatrixOperations tmp=(IMatrixOperations)Naming.lookup(route);
             int[] inic={0,0};
-            int[] fin={2500,2500};
+            int[] fin={16330,8588};
+            Point[] corners=claculateCorners();
             int[] c={2500,2500};
+            
             tmp.rotar(inic,fin,c,grados,pathImage);
 
          
@@ -45,7 +48,22 @@ public class ClientRotacion implements Runnable {
             System.out.println(e.getMessage());
         }
     }
-
+    private Point[] claculateCorners(int row,int colum,double gr) {
+		double cos=Math.cos(gr);
+		double sen=Math.sin(gr);
+		double xMi=min(0,min(row*sen,min(colum*cos,colum*cos+row*sen)));
+		double xMa=max(0,max(row*sen,max(colum*cos,colum*cos+row*sen)));
+		double yMi=min(0,min(row*cos,min(-colum*Sen,-colum*Sen+row*cos)));
+		double yMa=max(0,max(row*cos,max(-colum*Sen,-colum*Sen+row*cos)));
+		Point[] ret={new Point((int)Math.floor(xMi),(int)Math.floor(yMi)),new Point((int)Math.floor(xMa),(int)Math.floor(yMa))};
+		return ret;
+	}
+	public double min(double x,double y){
+		return x>y?y:x;
+	}
+	public double max(double x,double y){
+		return x<y?y:x;
+	}
     
 
       

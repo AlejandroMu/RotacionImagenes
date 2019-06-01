@@ -1,8 +1,7 @@
 package edu.icesi.MultiplicacionMatrices;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.lang.Runnable;
 import org.osoa.sca.annotations.*;
 import java.rmi.*;
@@ -66,72 +65,52 @@ public class MultiplicateMatrix extends UnicastRemoteObject implements IMatrixOp
 		}
 		return ret;
 	}
-
 	@Override
-	public boolean rotar(int[] inic,int[] fin,int[] c, double angle,String name)throws RemoteException {
-		double grR = Math.toRadians(angle);
-		double sin = Math.sin(grR);
-		double cos = Math.cos(grR);
-		double tan = Math.tan(grR / 2);
-		double dx = c[0] - c[0] * cos - c[1] * sin;
-		double[][] mat1 = { { 1, 0 }, { sin, 1 } };
-		double[][] mat2 = { { 1, -tan }, { 0, 1 } };
-		List<int[][]> points = new ArrayList<int[][]>();
-		Point[] corners = new Point[] { new Point(0, 0), new Point(0, 0) };
-		for (int ini = inic[0]; ini <= fin[0]; ini++) {
-			for (int j = inic[1]; j <= inic[1]; j++) {
-				double[][] vP = new double[][] { { ini }, { j } };
-				double[][] rs = matrixMultiplication(mat2, vP);
-				double[][] rs1 = matrixMultiplication(mat1, rs);
-				double[][] rs2 = matrixMultiplication(mat2, rs1);
-				int iN = (int) (Math.round(rs2[0][0]));
-				int jn = (int) (Math.round(rs2[1][0]));
-				int[] newPoint = { iN, jn };
-				int[] oldPoint = { ini, j };
-				int[][] tmp = { newPoint, oldPoint };
-				claculateCorners(corners, newPoint);
-				points.add(tmp);
-			}
-		}
-		write(inic,fin,points,name,corners);
-		broker.removeProces(servi);
+	public boolean rotar(int[] inic,int[] fin,int[] deltas, double angle,String name)throws RemoteException {
+		double gr=Math.toRadians(angle);
+        double cos = Math.cos(gr);
+        double sen = Math.sin(gr);
+		double[][] matRotacion = {{cos,sen},{-sen,cos}};
+        HashMap<Point, Point> points = new HashMap<Point,Point>();
+        for (int i = inic[1]; i < fin[1]; i++) {
+            for (int j = inic[0]; j < fin[0]; j++) {
+			   Point rotado=processIndex(i,j,matRotacion);
+            }
+        }
 
-		return true;
+	return transfomMatrix(points, corners,name,inic,fin);
 	}
-	private void claculateCorners(Point[] corners, int[] newPoint) {
-        if (newPoint[0] < corners[0].x) {
-            corners[0].setLocation(newPoint[0], corners[0].y);
-        }
-        if (newPoint[0] > corners[1].x) {
-            corners[1].setLocation(newPoint[0], corners[1].y);
-        }
-        if (newPoint[1] < corners[0].y) {
-            corners[0].setLocation(corners[0].x, newPoint[1]);
-        }
-        if (newPoint[1] > corners[1].y) {
-            corners[1].setLocation(corners[1].x, newPoint[1]);
-        }
+	public Point processIndex(int i,int j,double[][] matRotacion){
+		double[][] vP = new double[][] { { i }, { j } };
+		double[][] rs = matrixMultiplication(matRotacion, vP);
+		int iN= (int)Math.round(rs[0][0]);
+		int jn= (int)Math.round(rs[1][0]);
+		return new Point(iN, jn);		
 	}
-	public void write(int[] inic,int[] fin,List<int[][]> points,String name,Point[] corners){
+	
+	private boolean transfomMatrix(HashMap<Point, Point> points, Point[] cornes,String name,int[] inic,int[] fin) {
 		try{
-		int m = corners[1].y - corners[0].y;
-        int n = corners[1].x - corners[0].x;
-        int dx = -1 * corners[0].x;
-		int dy = -1 * corners[0].y;
-		File input=new File(pathBase+"/"+name);
-		System.out.println(pathBase+"/"+name);
-		System.out.println("bufer nuevo");
+        int m = cornes[1].y - cornes[0].y;
+        int n = cornes[1].x - cornes[0].x;
+        int dx = -1 * cornes[0].x;
+		int dy = -1 * cornes[0].y;
 		BufferedImage nueva=new BufferedImage(n+1,m+1,BufferedImage.TYPE_INT_RGB);
-		System.out.println("bufer antiguo");
-		BufferedImage origin=ImageIO.read(input);
-        for(int[][] tmp:points){
-			int rgb=origin.getRGB(tmp[1][1],tmp[1][0]);
-			nueva.setRGB(tmp[0][1],tmp[0][0],rgb);
+		BufferedImage old=ImageIO.read(new File(pathBase+"/"+name));
+		System.out.println("h "+old.getHeight());
+		System.out.println("w "+old.getWidth());
+        Iterator<Point> keys = points.keySet().iterator();
+        while (keys.hasNext()) {
+			Point tmp = keys.next();
+			Point tmp1=points.get(tmp);
+			int rgb=old.getRGB(tmp1.y,tmp1.x);
+            nueva.setRGB(tmp.y+dy,tmp.x+dx,rgb);
 		}
-		System.out.println("writing");
-		ImageIO.write(nueva,"jpg",new File(pathBase+"/"+"rotado.jpg"));
+		ImageIO.write(nueva,"jpg",new File(pathBase+"/rotadaN"));
+		return true;
 	}catch(Exception e){
 		System.out.println(e.getMessage());
+		return false;
+
 	}
 	}
 }
