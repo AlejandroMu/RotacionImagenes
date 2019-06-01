@@ -21,6 +21,8 @@ public class MultiplicateMatrix extends UnicastRemoteObject implements IMatrixOp
 	private IBroker broker;
 	@Property(name="nfs")
 	private String pathBase;
+	@Property(name="dest")
+	private String destino;
 
 	public MultiplicateMatrix()throws RemoteException{
 		super();
@@ -67,14 +69,17 @@ public class MultiplicateMatrix extends UnicastRemoteObject implements IMatrixOp
 	}
 	@Override
 	public boolean rotar(int[] inic,int[] fin,int[] deltas, double angle,String name)throws RemoteException {
+		BufferedImage nueva=ImageIO.read(new File(pathBase+"/"+destino));
+		BufferedImage old=ImageIO.read(new File(pathBase+"/"+name));
 		double gr=Math.toRadians(angle);
         double cos = Math.cos(gr);
         double sen = Math.sin(gr);
 		double[][] matRotacion = {{cos,sen},{-sen,cos}};
-        HashMap<Point, Point> points = new HashMap<Point,Point>();
         for (int i = inic[1]; i < fin[1]; i++) {
             for (int j = inic[0]; j < fin[0]; j++) {
 			   Point rotado=processIndex(i,j,matRotacion);
+			   int rgb=old.getRGB(j,i);
+			   nueva.setRGB(rotado.y,rotado.x,rgb);
             }
         }
 

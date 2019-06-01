@@ -38,8 +38,8 @@ public class ClientRotacion implements Runnable {
             int[] inic={0,0};
             int[] fin={16330,8588};
             Point[] corners=claculateCorners();
-            int[] c={2500,2500};
-            
+            int[] c={-corners[0].x,-corners[0].yMa};
+            int[] size=getSize(image);
             tmp.rotar(inic,fin,c,grados,pathImage);
 
          
@@ -65,6 +65,12 @@ public class ClientRotacion implements Runnable {
 		return x<y?y:x;
 	}
     
+	public int getSize(File ruta){
+		ImageInputStream input = ImageIO.createImageInputStream(ruta);
+		ImageReader reader = ImageIO.getImageReaders(input).next();
+		int[] size={reader.getHeight(0),reader.getWidth(0)};
+		return size;
+	}
 
       
 }

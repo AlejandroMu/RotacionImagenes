@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" 
+	xmlns:frascati="http://frascati.ow2.org/xmlns/sca/1.1" name="Cliente">
+
+	<service name="multiplicar" promote="clienteMul/operar"/>
+	<service name="rotar" promote="clienteRo/rotar"/>
+
+
+	<component name="clienteMul">
+		<service name="operar">
+			<interface.java interface="java.lang.Runnable"/>
+		</service>
+		<implementation.java class="edu.icesi.implementacion.ClientMultiplicar"/>
+		<property name="path">src/main/resources/Config.properties</property>
+		<property name="keyM1">m1</property>
+		<property name="keyResult">result</property>
+		<property name="keyM2">m2</property>
+		<property name="conexion">rmi://localhost:1235/multiplicar</property>
+	</component>
+
+	<component name ="clienteRo">
+		<service name="rotar">
+			<interface.java interface="java.lang.Runnable"/>
+		</service>
+		<implementation.java class="edu.icesi.implementacion.ClientRotacion"/>
+		<property name="pathI">src/main/resources/test.jpg</property>
+		<property name="grados">45</property>
+		<reference name="broker">
+			<frascati:binding.rmi host="192.168.161.23" serviceName="redireccion" port="5001"/>
+		</reference>
+	</component>
+
+
+</composite>
