@@ -16,6 +16,8 @@ public class MultiplicateMatrix extends UnicastRemoteObject implements IMatrixOp
 	private String servi;
 	private IMultiplicationVectors mVectors;
 	private IBroker broker;
+	@Property(name="nfs")
+	private String pathBase;
 
 	public MultiplicateMatrix()throws RemoteException{
 		super();
