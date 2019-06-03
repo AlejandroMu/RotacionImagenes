@@ -11,28 +11,28 @@ import edu.icesi.interfaces.*;
  */
 public class Comunication extends Thread {
 
-    private int[][] data;
+    private int[] inic;
+    private int[] fin;
+    private int[] deltas;
     private double angle;
-    private String urlB;
-    private ImageManager manager;
+    private String name;
+    private int[] tam;
+    private IMatrixOperations operador;
 
-    public Comunication(int[][] data, double a, String b,ImageManager ma) {
-        this.data = data;
-        angle = a;
-        urlB = b;
-        manager=ma;
+    public Comunication(int[] inic,int[] fin,int[] deltas,double grados,String name,int[] tam,IMatrixOperations oper) {
+       this.inic=inic;
+        this.fin=fin;
+        this.deltas=deltas;
+        this.angle=grados;
+        this.name=name;
+        this.tam=tam;
+        operador=oper;
     }
 
     @Override
     public void run() {
         try {
-            String url=urlB;
-            System. out. println(url);
-            // IBroker broker = (IBroker) Naming.lookup(url);
-            // String urlS = broker.getOperation();
-            //IMatrixOperations oper = (IMatrixOperations) Naming.lookup("rmi://localhost:1235/multiplicar");
-            //List<int[][]> ret=oper.rotar(data, angle);
-            //manager.merge(ret,new Point(),new Point());
+            operador.rotar(inic,fin,deltas,angle,name,tam);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -3,7 +3,7 @@
 	xmlns:frascati="http://frascati.ow2.org/xmlns/sca/1.1" name="MultiplicacionMatrices">
 
 	<service name="multiplicar" promote="multiplicacionMatrices/multiplicar">
-		<frascati:binding.rmi host="localhost" serviceName="multiplicar" port="5002"/>
+		<frascati:binding.rmi host="localhost" serviceName="multiplicar" port="5007"/>
 	</service>
 	<service name="attach" promote="multiplicacionMatrices/attach"/>
 
@@ -16,8 +16,8 @@
 			<interface.java interface="java.lang.Runnable"/>
 		</service>
 		<implementation.java class="edu.icesi.MultiplicacionMatrices.MultiplicateMatrix"/>
-		<property name="service">rmi://192.168.161.22:5002/multiplicar</property>
-		<property name="nfs">/home/swarch/nfs</property>
+		<property name="service">rmi://192.168.161.22:5007/multiplicar</property>
+		<property name="nfs">/home/swarch/Documentos</property>
 		<property name="dest">rotarNu</property>
 		<reference name="broker">
 			<frascati:binding.rmi host="192.168.161.22" serviceName="redireccion" port="5001"/>
@@ -30,6 +30,15 @@
 		</service>
 		<implementation.java class="edu.icesi.MultiplicacionVectores.MultiplicationVectors"/>
 	</component>
+
+	<component name="manager">
+		<service name="imagenes">
+			<interface.java interface="edu.icesi.interfaces.IImageManager"/>
+		</service>
+		<implementation.java class="edu.icesi.managerImage.ManagerImage"/>
+	</component>
+
 	<wire source="multiplicacionMatrices/mVectors" target="multiplicacionVectores/multiplicarVectores"/>
+	<wire source="multiplicacionMatrices/manager" target="manager/imagenes"/>
 
 </composite>

@@ -5,7 +5,9 @@ import java.lang.Runnable;
 import org.osoa.sca.annotations.*;
 import java.rmi.*;
 import java.rmi.server.*;
+
 import edu.icesi.interfaces.*;
+
 import java.io.*;
 import javax.imageio.*;
 import java.awt.image.*;
@@ -22,6 +24,8 @@ public class MultiplicateMatrix extends UnicastRemoteObject implements IMatrixOp
 	private String pathBase;
 	@Property(name = "dest")
 	private String destino;
+	@Reference(name="manager")
+	private IImageManager manager;
 
 	public MultiplicateMatrix() throws RemoteException {
 		super();
@@ -71,13 +75,12 @@ public class MultiplicateMatrix extends UnicastRemoteObject implements IMatrixOp
 	public boolean rotar(int[] inic, int[] fin, int[] deltas, double angle, String name, int[] tam)
 			throws RemoteException {
 		try {
-			System.out.println("fin -> " + fin[0] + " " + fin[1]);
-			System.out.println("deltas -> " + deltas[0] + " " + deltas[1]);
-			BufferedImage nueva = new BufferedImage(tam[0] + 1, tam[1] + 1, BufferedImage.TYPE_INT_RGB);
-			BufferedImage old = ImageIO.read(new File(pathBase + "/" + name));
+			System.out.println("nice");
+			BufferedImage nueva = new BufferedImage(tam[0], tam[1], BufferedImage.TYPE_INT_RGB);
+			BufferedImage old = manager.loadImage(pathBase+"/"+name, new Rectangle(inic[0],inic[1],fin[0]-inic[0],fin[1]-inic[1]));
 			double[][] matRotacion = matRotacion(angle);
-			for (int i = inic[1]; i < fin[1]; i++) {
-				for (int j = inic[0]; j < fin[0]; j++) {
+			for (int i = 0; i < fin[1]-inic[1]; i++) {
+				for (int j = 0; j < fin[0]-inic[0]; j++) {
 					Point rotado = processIndex(i, j, matRotacion);
 					if (rotado.y + deltas[1] >= 0 && rotado.y + deltas[1] < nueva.getWidth()
 							&& rotado.x + deltas[0] >= 0 && rotado.x + deltas[0] < nueva.getHeight()) {
@@ -87,7 +90,7 @@ public class MultiplicateMatrix extends UnicastRemoteObject implements IMatrixOp
 
 				}
 			}
-			ImageIO.write(nueva, "jpg", new File(pathBase + "/" + destino + ".jpg"));
+			ImageIO.write(nueva, "jpg", new File(pathBase + "/" + destino +"-"+inic[0]+"-"+inic[1]+"-"+fin[0]+"-"+fin[1]+"-"+angle +".jpg"));
 			return true;
 
 		} catch (Exception e) {

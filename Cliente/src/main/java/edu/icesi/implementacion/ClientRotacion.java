@@ -36,26 +36,66 @@ public class ClientRotacion implements Runnable {
 
     public void run(){
         try {
-            String route=broker.getOperation();
-            System.out.println(pathImage+"/"+name);
             File imagen=new File(pathImage+"/"+name);
-            IMatrixOperations tmp=(IMatrixOperations)Naming.lookup(route);
-            int[] inic={0,0};
             int[] size=getSize(imagen);
-            System.out.println("size -> "+size[0]+" "+size[1]);
-            Point[] corners=claculateCorners(size[1],size[0],grados);
-            System.out.println("corners ->"+corners[0]+" "+corners[1]);
-            int[] c={-corners[0].x,-corners[0].y};
-            int[] tam={corners[1].x-corners[0].x,corners[1].y-corners[0].y};
-            System.out.println("tam -> "+tam[0]+" "+tam[1]);
-            tmp.rotar(inic,size,c,grados,name,tam);
-         
+            int cutx=(int)Math.ceil(size[0]/17000.0);
+            int cuty=(int)Math.ceil(size[1]/9000.0);
+            int[] inic={0,0};
+            
+            int plusx=(int)Math.ceil((double)size[0]/cutx);
+            int plusy=(int)Math.ceil((double)size[1]/cuty);
+           
+           
+            
+            int x0=0;
+            int y0=0;
+            int x1=plusx;
+            int y1=plusy;
+            while(true){
+                Point[] corners=claculateCorners((y1-y0),(x1-x0),grados);
+                int[] deltas = {-corners[0].x,-corners[0].y};
+                int[] tam={corners[1].x-corners[0].x+1,corners[1].y-corners[0].y+1};
+               
+                
+                rotar(new int[]{x0,y0},new int[]{x1,y1},deltas,grados,name,tam);
+                if(x1==size[0]){
+                    if(y1==size[1]){
+                        break;
+                    }
+                    y0+=plusy;
+                    x0=0;
+                    y1+=plusy;
+                    x1=plusx;
+                    if(y1>size[1]){
+                        y1=size[1];
+                    }
+                }else{
+                    x0+=plusx;
+                    x1+=plusx;
+                    if(x1>size[0]){
+                        x1=size[0];
+                    }
+                }
+            }
             
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
-    private Point[] claculateCorners(int row,int colum,double grados) {
+   
+    public void rotar(int[] inic,int[] fin,int[] deltas,double grados,String name,int[] tam){
+       try {
+        String route=broker.getOperation();
+        IMatrixOperations tmp=(IMatrixOperations)Naming.lookup(route);
+        Comunication com=new Comunication(inic, fin, deltas, grados, name, tam, tmp);
+        com.start();
+
+       } catch (Exception e) {
+        System.out.println(e.getMessage());
+    }
+    }
+
+    private Point[] claculateCorners(int row,int colum ,double grados) {
         double gr=Math.toRadians(grados);
 		double cos=Math.cos(gr);
         double sen=Math.sin(gr);
