@@ -41,27 +41,30 @@ public class ClientRotacion implements Runnable {
             File imagen=new File(pathImage+"/"+name);
             IMatrixOperations tmp=(IMatrixOperations)Naming.lookup(route);
             int[] inic={0,0};
-            int[] fin={16330,8588};
             int[] size=getSize(imagen);
-            Point[] corners=claculateCorners(size[0],size[1],grados);
+            System.out.println("size -> "+size[0]+" "+size[1]);
+            Point[] corners=claculateCorners(size[1],size[0],grados);
+            System.out.println("corners ->"+corners[0]+" "+corners[1]);
             int[] c={-corners[0].x,-corners[0].y};
-            tmp.rotar(inic,size,c,grados,name);
+            int[] tam={corners[1].x-corners[0].x,corners[1].y-corners[0].y};
+            System.out.println("tam -> "+tam[0]+" "+tam[1]);
+            tmp.rotar(inic,size,c,grados,name,tam);
          
             
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
-    private Point[] claculateCorners(int row,int colum,double gr) {
+    private Point[] claculateCorners(int row,int colum,double grados) {
+        double gr=Math.toRadians(grados);
 		double cos=Math.cos(gr);
         double sen=Math.sin(gr);
-        row--;
-        colum--;
-		double xMi=min(0,min(row*sen,min(colum*cos,colum*cos+row*sen)));
-		double xMa=max(0,max(row*sen,max(colum*cos,colum*cos+row*sen)));
-		double yMi=min(0,min(row*cos,min(-colum*sen,-colum*sen+row*cos)));
-		double yMa=max(0,max(row*cos,max(-colum*sen,-colum*sen+row*cos)));
-		Point[] ret={new Point((int)Math.floor(xMi),(int)Math.floor(yMi)),new Point((int)Math.floor(xMa),(int)Math.floor(yMa))};
+     
+		double xMi=min(0,min(row*cos,min(colum*sen,row*cos+colum*sen)));
+		double xMa=max(0,max(row*cos,max(colum*sen,row*cos+colum*sen)));
+		double yMi=min(0,min(colum*cos,min(-row*sen,-row*sen+colum*cos)));
+		double yMa=max(0,max(colum*cos,max(-row*sen,-row*sen+colum*cos)));
+		Point[] ret={new Point((int)Math.ceil(xMi),(int)Math.ceil(yMi)),new Point((int)Math.floor(xMa),(int)Math.floor(yMa))};
 		return ret;
 	}
 	public double min(double x,double y){

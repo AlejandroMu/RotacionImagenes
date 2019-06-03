@@ -1,6 +1,5 @@
 package edu.icesi.MultiplicacionMatrices;
 
-
 import java.util.*;
 import java.lang.Runnable;
 import org.osoa.sca.annotations.*;
@@ -13,25 +12,25 @@ import java.awt.image.*;
 import java.awt.*;
 
 @Service(Runnable.class)
-public class MultiplicateMatrix extends UnicastRemoteObject implements IMatrixOperations,Runnable {
+public class MultiplicateMatrix extends UnicastRemoteObject implements IMatrixOperations, Runnable {
 
 	@Property(name = "service")
 	private String servi;
 	private IMultiplicationVectors mVectors;
 	private IBroker broker;
-	@Property(name="nfs")
+	@Property(name = "nfs")
 	private String pathBase;
-	@Property(name="dest")
+	@Property(name = "dest")
 	private String destino;
 
-	public MultiplicateMatrix()throws RemoteException{
+	public MultiplicateMatrix() throws RemoteException {
 		super();
 	}
 
 	@Reference(name = "broker", required = true)
 	public void setBroker(IBroker pat) {
 		broker = pat;
-		
+
 	}
 
 	@Reference(name = "mVectors", required = true)
@@ -39,14 +38,14 @@ public class MultiplicateMatrix extends UnicastRemoteObject implements IMatrixOp
 		mVectors = v;
 	}
 
-	public void run(){
+	public void run() {
 		System.out.println("Connecting ...");
 		broker.attach(servi);
 		System.out.println("Connected");
 	}
 
 	// MxN v NxK
-	public double[][] matrixMultiplication(double[][] m1, double[][] m2)throws RemoteException {
+	public double[][] matrixMultiplication(double[][] m1, double[][] m2) throws RemoteException {
 		double[][] m2T = trasnponse(m2);
 		double[][] ret = new double[m1.length][m2[0].length];
 		for (int i = 0; i < ret.length; i++) {
@@ -67,50 +66,50 @@ public class MultiplicateMatrix extends UnicastRemoteObject implements IMatrixOp
 		}
 		return ret;
 	}
+
 	@Override
-	public boolean rotar(int[] inic,int[] fin,int[] deltas, double angle,String name)throws RemoteException {
+	public boolean rotar(int[] inic, int[] fin, int[] deltas, double angle, String name, int[] tam)
+			throws RemoteException {
 		try {
-			System.out.println("inic -> "+inic[0]+" "+inic[1]);
-			System.out.println("fin -> "+fin[0]+" "+fin[1]);
-			System.out.println("deltas -> "+deltas[0]+" "+deltas[1]);
-			System.out.println("rotar");
-			System.out.println("Bufer n --> "+pathBase+"/"+destino);
-			File nu=new File(pathBase+"/"+destino);
-			BufferedImage nueva=new BufferedImage(1500,1500,BufferedImage.TYPE_INT_RGB);
-			System.out.println("Bufer old-> "+pathBase+"/"+name);
-			BufferedImage old=ImageIO.read(new File(pathBase+"/"+name));
-			double gr=Math.toRadians(angle);
-			double cos = Math.cos(gr);
-			double sen = Math.sin(gr);
-			double[][] matRotacion = {{cos,sen},{-sen,cos}};
+			System.out.println("fin -> " + fin[0] + " " + fin[1]);
+			System.out.println("deltas -> " + deltas[0] + " " + deltas[1]);
+			BufferedImage nueva = new BufferedImage(tam[0] + 1, tam[1] + 1, BufferedImage.TYPE_INT_RGB);
+			BufferedImage old = ImageIO.read(new File(pathBase + "/" + name));
+			double[][] matRotacion = matRotacion(angle);
 			for (int i = inic[1]; i < fin[1]; i++) {
 				for (int j = inic[0]; j < fin[0]; j++) {
-				   Point rotado=processIndex(i,j,matRotacion);
-				   int rgb=old.getRGB(j,i);
-				   if(rotado.x<0){System.out.println("x < "+ rotado.x);}
-				   if(rotado.x+deltas[1]>=1500){System.out.println("x > "+ rotado.x);}
-				   if(rotado.y<0){System.out.println("y < "+ rotado.y);}
-				   if(rotado.y+deltas[0]>=1500){System.out.println("y > "+ rotado.y);}
-				   
-				   nueva.setRGB(rotado.y+deltas[0],rotado.x+deltas[1],rgb);
+					Point rotado = processIndex(i, j, matRotacion);
+					if (rotado.y + deltas[1] >= 0 && rotado.y + deltas[1] < nueva.getWidth()
+							&& rotado.x + deltas[0] >= 0 && rotado.x + deltas[0] < nueva.getHeight()) {
+						int rgb = old.getRGB(j, i);
+						nueva.setRGB(rotado.y + deltas[1], rotado.x + deltas[0], rgb);
+					}
+
 				}
 			}
-			System.out.println("return");
-			ImageIO.write(nueva,"jpg",nu);
-		return true;
-			
+			ImageIO.write(nueva, "jpg", new File(pathBase + "/" + destino + ".jpg"));
+			return true;
+
 		} catch (Exception e) {
-			System.out.println("exc "+e.getMessage());
+			System.out.println("exc " + e.toString());
+
 			return false;
 		}
 	}
-	public Point processIndex(int i,int j,double[][] matRotacion)throws RemoteException{
+
+	public double[][] matRotacion(double grados) {
+		double gr = Math.toRadians(grados);
+		double cos = Math.cos(gr);
+		double sen = Math.sin(gr);
+		return new double[][] { { cos, sen }, { -sen, cos } };
+	}
+
+	public Point processIndex(int i, int j, double[][] matRotacion) throws RemoteException {
 		double[][] vP = new double[][] { { i }, { j } };
 		double[][] rs = matrixMultiplication(matRotacion, vP);
-		int iN= (int)Math.round(rs[0][0]);
-		int jn= (int)Math.round(rs[1][0]);
-		return new Point(iN, jn);		
+		int iN = (int) Math.round(rs[0][0]);
+		int jn = (int) Math.round(rs[1][0]);
+		return new Point(iN, jn);
 	}
-	
 
 }

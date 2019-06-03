@@ -16,11 +16,11 @@
 			<interface.java interface="java.lang.Runnable"/>
 		</service>
 		<implementation.java class="edu.icesi.MultiplicacionMatrices.MultiplicateMatrix"/>
-		<property name="service">rmi://192.168.161.23:5002/multiplicar</property>
+		<property name="service">rmi://192.168.161.22:5002/multiplicar</property>
 		<property name="nfs">/home/swarch/nfs</property>
-		<property name="dest">rotarNu.jpg</property>
+		<property name="dest">rotarNu</property>
 		<reference name="broker">
-			<frascati:binding.rmi host="192.168.161.23" serviceName="redireccion" port="5001"/>
+			<frascati:binding.rmi host="192.168.161.22" serviceName="redireccion" port="5001"/>
 		</reference>
 	</component>
 
