@@ -86,7 +86,13 @@ public class ManagerImage implements IImageManager {
 
 	@Override
 	public void writeImage(String ruta,HashMap<Point,Integer> img,Rectangle rec) {
-		
+		try{
+			File write=new File(ruta);
+			BufferedImage image=ImageIO.read(write);
+			
+		}catch(Exception s){
+
+		}
 
 	}
 

@@ -38,13 +38,13 @@ public class ClientRotacion implements Runnable {
         try {
             File imagen=new File(pathImage+"/"+name);
             int[] size=getSize(imagen);
-            int cutx=(int)Math.ceil(size[0]/17000.0);
-            int cuty=(int)Math.ceil(size[1]/9000.0);
+            int cutx=(int)Math.ceil(size[0]/10000.0);
+            int cuty=(int)Math.ceil(size[1]/10000.0);;
             int[] inic={0,0};
             
             int plusx=(int)Math.ceil((double)size[0]/cutx);
             int plusy=(int)Math.ceil((double)size[1]/cuty);
-           
+           System.out.println("nice");
            
             
             int x0=0;
@@ -85,6 +85,7 @@ public class ClientRotacion implements Runnable {
    
     public void rotar(int[] inic,int[] fin,int[] deltas,double grados,String name,int[] tam){
        try {
+           System.out.println("hilo");
         String route=broker.getOperation();
         IMatrixOperations tmp=(IMatrixOperations)Naming.lookup(route);
         Comunication com=new Comunication(inic, fin, deltas, grados, name, tam, tmp);
@@ -116,13 +117,14 @@ public class ClientRotacion implements Runnable {
     
 	public int[] getSize(File ruta){
         try {
+            System.out.println(ruta);
             ImageInputStream input = ImageIO.createImageInputStream(ruta);
             ImageReader reader = ImageIO.getImageReaders(input).next();
             reader.setInput(input);
             int[] size={reader.getWidth(0),reader.getHeight(0)};
             return size;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("size: "+e.getMessage());
             return new int[]{1000 ,700};
         }
 	}

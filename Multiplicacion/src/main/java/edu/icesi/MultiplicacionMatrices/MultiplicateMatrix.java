@@ -75,7 +75,6 @@ public class MultiplicateMatrix extends UnicastRemoteObject implements IMatrixOp
 	public boolean rotar(int[] inic, int[] fin, int[] deltas, double angle, String name, int[] tam)
 			throws RemoteException {
 		try {
-			System.out.println("nice");
 			BufferedImage nueva = new BufferedImage(tam[0], tam[1], BufferedImage.TYPE_INT_RGB);
 			BufferedImage old = manager.loadImage(pathBase+"/"+name, new Rectangle(inic[0],inic[1],fin[0]-inic[0],fin[1]-inic[1]));
 			double[][] matRotacion = matRotacion(angle);
@@ -90,7 +89,7 @@ public class MultiplicateMatrix extends UnicastRemoteObject implements IMatrixOp
 
 				}
 			}
-			ImageIO.write(nueva, "jpg", new File(pathBase + "/" + destino +"-"+inic[0]+"-"+inic[1]+"-"+fin[0]+"-"+fin[1]+"-"+angle +".jpg"));
+			ImageIO.write(nueva, "jpg", new File(pathBase + "/" + destino +inic[0]+inic[1]+"-"+fin[0]+fin[1]+"-"+angle +".jpg"));
 			return true;
 
 		} catch (Exception e) {
